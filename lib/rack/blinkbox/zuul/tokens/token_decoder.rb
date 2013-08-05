@@ -1,13 +1,21 @@
 require "rack"
 require "sandal"
+require "rack/blinkbox/zuul/tokens/file_key_finder"
 
 module Rack
   module Blinkbox
     module Zuul
+      # Rack middleware for decoding blinkbox Zuul authentication tokens.
       class TokenDecoder
 
-        def initialize(app)
+        # Initialises a new token decoder.
+        #
+        # @param app [??] The Rack application.
+        # @param key_finder [#key_with_id] The class that is used to find
+        #
+        def initialize(app, key_finder = nil)
           @app = app
+          @key_finder = key_finder || FileKeyFinder.new("./keys")
         end
 
         def call(env)
@@ -49,27 +57,16 @@ module Rack
         def decode_access_token(access_token)
           Sandal.decode_token(access_token) do |header|            
             if header["alg"] == Sandal::Sig::ES256::NAME
-              key = load_key(header["kid"], :public)
+              key = @key_finder.key_with_id(header["kid"], :public)
               Sandal::Sig::ES256.new(key)
             elsif header["enc"] == Sandal::Enc::A128GCM::NAME && header["alg"] == Sandal::Enc::Alg::RSA_OAEP::NAME
-              key = load_key(header["kid"], :private)
+              key = @key_finder.key_with_id(header["kid"], :private)
               Sandal::Enc::A128GCM.new(Sandal::Enc::Alg::RSA_OAEP.new(key))
             else
-              raise Sandal::TokenError.new("Unsupported signing/encryption method.")
+              raise Sandal::UnsupportedTokenError.new("Unsupported signing/encryption method.")
             end
           end
         end
-
-        def load_key(key_id, type)
-          raise Sandal::TokenError.new("Unspecified key identifier") if key_id.nil?
-          key_dir = "./keys" + ::File.expand_path(key_id, "/")
-          key_file = "#{key_dir}/#{type}.pem"
-          begin
-            ::File.read(key_file)
-          rescue
-            raise Sandal::TokenError.new("Unknown key.")
-          end
-        end  
 
       end
     end
