@@ -2,7 +2,7 @@ module Rack
   module Blinkbox
     module Zuul
       class Tokens
-        VERSION = "0.0.1"
+        VERSION = "0.0.2"
       end
     end
   end
