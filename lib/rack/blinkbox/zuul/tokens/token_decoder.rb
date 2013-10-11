@@ -51,7 +51,11 @@ module Rack
           auth_scheme, bearer_token = auth_header.split(" ", 2)
           return nil unless auth_scheme == "Bearer"
 
-          bearer_token
+          # return an empty string if there was no bearer token in the header so that it's possible to
+          # differentiate between no attempt to provide a bearer token, in the cases above where the
+          # Authorization header is missing or doesn't use the Bearer scheme, and an attempt to provide
+          # bearer token but it happens to be empty.
+          bearer_token || ""
         end
 
         def decode_access_token(access_token)
