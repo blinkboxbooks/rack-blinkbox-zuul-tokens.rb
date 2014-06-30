@@ -1,4 +1,4 @@
-source "https://rubygems.org"
-source 'http://gems.mobcastdev.com'
+source "http://artifactory.blinkbox.local/artifactory/api/gems/bbb-gems/"
+source "http://artifactory.blinkbox.local/artifactory/api/gems/rubygems/"
 
 gemspec

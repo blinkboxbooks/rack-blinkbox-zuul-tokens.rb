@@ -23,5 +23,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rack-test"
   s.add_development_dependency "rspec", "~> 2.0"
   s.add_development_dependency "sinatra"
-  s.add_development_dependency "yarjuf"
 end
