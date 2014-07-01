@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.0.1 ([#4](https://git.mobcastdev.com/Zuul/rack-blinkbox-zuul-tokens/pull/4) 2014-06-30 17:34:52)
+## 0.1.0 ([#4](https://git.mobcastdev.com/Zuul/rack-blinkbox-zuul-tokens/pull/4) 2014-06-30 17:34:52)
 
 Move to artifactory
 
